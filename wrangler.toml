@@ -1,0 +1,7 @@
+name = "rss"
+type = "webpack"
+
+account_id = "6b50c39ed70ea4b2f11ef1d41b027109"
+workers_dev = true
+route = ""
+zone_id = ""
