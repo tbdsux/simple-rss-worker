@@ -1,6 +1,20 @@
 // XML parser
 const parser = require('fast-xml-parser')
 
+const json = (obj) => JSON.stringify(obj)
+const RequestError = (error, message) => {
+  return { error, message }
+}
+const res = (response, init = {}) => {
+  return new Response(response, {
+    headers: {
+      'content-type': 'application/json;charset=UTF-8',
+    },
+    ...init,
+  })
+}
+
+// website fetcher
 const fetcher = async (url) => {
   return await fetch(url, {
     method: 'GET',
@@ -14,9 +28,13 @@ const fetcher = async (url) => {
  * @param {Request} request
  */
 const requestParser = async (request) => {
-  const { url } = await request.clone().json()
-
-  return url ? url : null
+  return await request
+    .clone()
+    .json()
+    .then((r) => {
+      return r.url ? r.url : null
+    })
+    .catch(() => null)
 }
 
 /**
@@ -26,42 +44,47 @@ const requestParser = async (request) => {
 async function handleRequest(request) {
   // check if not POST
   if (request.method !== 'POST') {
-    return new Response(
-      JSON.stringify({ error: 405, message: 'Method Not Allowed' }),
-      {
-        status: 405,
-        statusText: 'Method Not Allowed',
-      },
-    )
+    return res(json(RequestError(405, 'Method Not Allowed')), {
+      status: 405,
+      statusText: 'Method Not Allowed',
+    })
   }
 
   const rss_url = await requestParser(request)
 
   // `url` is not defined in request body
   if (!rss_url) {
-    return new Response(
-      JSON.stringify(
-        {
-          error: '400',
-          message: 'Bad Request, please set the `url` in your body data.',
-        },
-        {
-          status: 400,
-          statusText: 'Bad Request',
-        },
+    return res(
+      json(
+        RequestError(
+          400,
+          'Bad Request, please set the `url` in your body data.',
+        ),
       ),
+      {
+        status: 400,
+        statusText: 'Bad Request',
+      },
     )
   }
 
-  let xmlData = await fetcher(rss_url)
-
-  let json = parser.parse(xmlData)
-
-  return new Response(JSON.stringify(json.rss.channel), {
-    headers: {
-      'content-type': 'application/json;charset=UTF-8',
-    },
-  })
+  try {
+    let xmlData = await fetcher(rss_url)
+    let rssJson = parser.parse(xmlData)
+    // return parsed rss => `rss.channel`
+    return res(json(rssJson.rss.channel))
+  } catch {
+    // if there was a problem, return 500 error
+    return res(
+      json(
+        RequestError(
+          500,
+          'There was a problem with your request, please try again later.',
+        ),
+      ),
+      { status: 500, statusText: 'Internal Server Error' },
+    )
+  }
 }
 
 addEventListener('fetch', (event) => {
