@@ -1,15 +1,13 @@
-# 👷 `worker-template` Hello World
+# simple-rss-worker
 
-A template for kick starting a Cloudflare worker project.
+Just a Simple RSS Parser API built with cloudflare worker
 
-[`index.js`](https://github.com/cloudflare/worker-template/blob/master/index.js) is the content of the Workers script.
-
-#### Wrangler
-
-To generate using [wrangler](https://github.com/cloudflare/wrangler)
+## Usage
 
 ```
-wrangler generate projectname https://github.com/cloudflare/worker-template
+curl -X POST https://rss.theboringdude.workers.dev/ -H "Content-Type: application/json" -d '{"url": "https://data.gmanetwork.com/gno/rss/news/feed.xml"}'
 ```
 
-Further documentation for Wrangler can be found [here](https://developers.cloudflare.com/workers/tooling/wrangler).
+##
+
+### &copy; 2021 | TheBoringDude
