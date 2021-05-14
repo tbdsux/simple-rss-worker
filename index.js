@@ -1,12 +1,6 @@
 // XML parser
 const parser = require('fast-xml-parser');
-const { handleOptions } = require('./cors');
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, HEAD, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-};
+const { handleOptions, corsHeaders } = require('./cors');
 
 const json = (obj) => JSON.stringify(obj);
 
