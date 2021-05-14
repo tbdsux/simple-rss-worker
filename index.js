@@ -11,7 +11,7 @@ const res = (response, init = {}) => {
   const headers = new Headers({
     'content-type': 'application/json',
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, HEAD, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Origin',
     'Access-Control-Max-Age': 86400,
   })
