@@ -84,12 +84,13 @@ async function handleRequest(request) {
   }
 }
 
-addEventListener('fetch', (event) => {
-  const request = request.method;
-
-  if (event.request === 'OPTIONS') {
-    event.respondWith(handleOptions(request));
-  } else {
-    event.respondWith(handleRequest(event.request));
+async function handler(request) {
+  if (request.method === 'OPTIONS') {
+    return handleOptions(request);
   }
+  return await handleRequest(request);
+}
+
+addEventListener('fetch', (event) => {
+  event.respondWith(handler(event.request));
 });
