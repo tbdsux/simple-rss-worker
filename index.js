@@ -8,14 +8,16 @@ const RequestError = (error, message) => {
 }
 
 const res = (response, init = {}) => {
+  const headers = new Headers({
+    'content-type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Origin',
+    'Access-Control-Max-Age': 86400,
+  })
+
   return new Response(response, {
-    headers: {
-      'content-type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST',
-      'Access-Control-Allow-Headers': 'Content-Type, Origin',
-      'Access-Control-Max-Age': 86400,
-    },
+    headers: headers,
     ...init,
   })
 }
