@@ -9,6 +9,7 @@ const res = (response, init = {}) => {
   return new Response(response, {
     headers: {
       'content-type': 'application/json;charset=UTF-8',
+      'Access-Control-Allow-Origin': '*',
     },
     ...init,
   })
