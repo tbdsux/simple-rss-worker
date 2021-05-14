@@ -2,15 +2,18 @@
 const parser = require('fast-xml-parser')
 
 const json = (obj) => JSON.stringify(obj)
+
 const RequestError = (error, message) => {
   return { error, message }
 }
+
 const res = (response, init = {}) => {
   return new Response(response, {
     headers: {
-      'content-type': 'application/json;charset=UTF-8',
+      'content-type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'POST',
+      'Access-Control-Max-Age': 86400,
     },
     ...init,
   })
@@ -56,18 +59,10 @@ async function handleRequest(request) {
 
   // `url` is not defined in request body
   if (!rss_url) {
-    return res(
-      json(
-        RequestError(
-          400,
-          'Bad Request, please set the `url` in your body data.',
-        ),
-      ),
-      {
-        status: 400,
-        statusText: 'Bad Request',
-      },
-    )
+    return res(json(RequestError(400, 'Bad Request, please set the `url` in your body data.')), {
+      status: 400,
+      statusText: 'Bad Request',
+    })
   }
 
   try {
@@ -78,12 +73,7 @@ async function handleRequest(request) {
   } catch {
     // if there was a problem, return 500 error
     return res(
-      json(
-        RequestError(
-          500,
-          'There was a problem with your request, please try again later.',
-        ),
-      ),
+      json(RequestError(500, 'There was a problem with your request, please try again later.')),
       { status: 500, statusText: 'Internal Server Error' },
     )
   }
