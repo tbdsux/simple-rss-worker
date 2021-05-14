@@ -69,8 +69,12 @@ async function handleRequest(request) {
   try {
     let xmlData = await fetcher(rss_url)
     let rssJson = parser.parse(xmlData)
+
     // return parsed rss
-    return res(json(rssJson))
+    return res(json(rssJson), {
+      status: 200,
+      statusText: 'Ok',
+    })
   } catch {
     // if there was a problem, return 500 error
     return res(
