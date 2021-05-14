@@ -86,10 +86,10 @@ async function handleRequest(request) {
 
 addEventListener('fetch', (event) => {
   const request = request.method;
+
   if (event.request === 'OPTIONS') {
     event.respondWith(handleOptions(request));
-    return;
+  } else {
+    event.respondWith(handleRequest(event.request));
   }
-
-  event.respondWith(handleRequest(event.request));
 });
